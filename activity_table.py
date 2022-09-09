@@ -153,7 +153,7 @@ class make_activity:
         final=[]
         icr=[]
         
-        query = "SELECT * FROM customerScans where date(createdAt)<='"+str(self.end)+"'"
+        query = "SELECT * FROM customerScans where response!=6 date(createdAt)<='"+str(self.end)+"'"
         df = pd.read_sql_query(query, con = engine)
         print('Scan Load Successful! \n\n')
         df['createdAt'] = pd.to_datetime(df['createdAt'], dayfirst = True)
@@ -240,7 +240,7 @@ class make_activity:
         s_f.append(alt)
         
         
-        new_df=pd.DataFrame(alt['retailerCategory'].to_list(),columns=['Pref_cat1','Pref_cat2','Pref_cat3'])
+        new_df=pd.DataFrame(alt['retailerCategory'].to_list(),columns=['preferredCategory1','preferredCategory2','preferredCategory3'])
         s_f.append(new_df)
         s_t=pd.concat(s_f,axis=1)
         s_t=s_t.set_index('customerId').drop(columns=['retailerCategory'])
@@ -249,7 +249,7 @@ class make_activity:
         p_s=[]
         alter=ret_p.reset_index()
         p_s.append(alter)
-        new_df2=pd.DataFrame(alter['retailerName'].to_list(),columns=['Pref_ret1','Pref_ret2','Pref_ret3'])
+        new_df2=pd.DataFrame(alter['retailerName'].to_list(),columns=['preferredretailer1','preferredretailer2','preferredretailer3'])
         p_s.append(new_df2)
         p_t=pd.concat(p_s,axis=1)
         p_t=p_t.set_index('customerId').drop(columns=['retailerName'])
@@ -418,6 +418,12 @@ class make_activity:
         frames.append(sec_7)
         sec_8=self.transferred_delights()
         frames.append(sec_8)
+        sec_9=self.news_feed()
+        frames.append(sec_9)
+        sec_10=self.gems()
+        frames.append(sec_10)
+        sec_11=self.referred()
+        frames.append(sec_11)
         
         plt=pd.concat(frames,axis=1).replace([np.inf, -np.inf], np.nan).reset_index()
         plt=pd.merge(df_main,plt,how='inner',on='customerId')
@@ -435,7 +441,7 @@ class make_activity:
         
 if __name__ == '__main__':
     a=make_activity(date(2022,8,17))
-    b,p=a.scan_related()
+    b=a.main()
     print('Start writing')
     b.to_sql('customerActivity', con=engine, if_exists='replace',index_label='customerId')
     print('End writing')   
