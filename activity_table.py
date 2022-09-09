@@ -153,7 +153,7 @@ class make_activity:
         final=[]
         icr=[]
         
-        query = "SELECT * FROM customerScans where response!=6 date(createdAt)<='"+str(self.end)+"'"
+        query = "SELECT * FROM customerScans where response!=6 and date(createdAt)<='"+str(self.end)+"'"
         df = pd.read_sql_query(query, con = engine)
         print('Scan Load Successful! \n\n')
         df['createdAt'] = pd.to_datetime(df['createdAt'], dayfirst = True)
