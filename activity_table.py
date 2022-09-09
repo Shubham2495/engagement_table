@@ -186,6 +186,7 @@ class make_activity:
         pss=pd.pivot_table(df,values='id',index=['customerId','Date'],aggfunc='count').reset_index()
         pss['diff_days']=(pss.sort_values('Date').groupby('customerId').Date.shift() - pss.Date).dt.days.abs().dropna()
         pff = pss.groupby('customerId')['diff_days'].median().round().reset_index().rename(columns={'diff_days':'shoppingInterval'}).set_index('customerId')
+        print(pff)
         #pff=pff.rename(columns={'diff_days':'shoppingInterval'})
         icr.append(pff)
         pret=all_sc.reset_index()
@@ -486,7 +487,7 @@ class make_activity:
         
 if __name__ == '__main__':
     a=make_activity(date(2022,8,17))
-    b=a.main()
+    b=a.scan_related()
     print('Start writing')
     b.to_sql('customerActivity', con=engine, if_exists='replace',index_label='customerId')
     print('End writing')   
