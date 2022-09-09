@@ -403,20 +403,53 @@ class make_activity:
         #df_main=df_main.set_index('customerId')
         #frames.append(df_main)
         sec_1=self.scan_related()
+        if isinstance(sec_1, pd.DataFrame):
+            print('chill')
+        else:
+            print('its scan')
         frames.append(sec_1)
+        
         sec_2=self.fcm_related()
+        if isinstance(sec_2, pd.DataFrame):
+            print('chill')
+        else:
+            print('its fcm')
         frames.append(sec_2)
         sec_3=self.coupon_related()
+        if isinstance(sec_3, pd.DataFrame):
+            print('chill')
+        else:
+            print('its coupon')
         frames.append(sec_3)
         sec_4=self.reward_related()
+        if isinstance(sec_4, pd.DataFrame):
+            print('chill')
+        else:
+            print('its reward')
         frames.append(sec_4)
         sec_5=self.gamification_related()
+        if isinstance(sec_5, pd.DataFrame):
+            print('chill')
+        else:
+            print('its game')
         frames.append(sec_5)
         sec_6=self.scan_win()
+        if isinstance(sec_6, pd.DataFrame):
+            print('chill')
+        else:
+            print('its scan and win')
         frames.append(sec_6)
         sec_7=self.notification_clicked()
+        if isinstance(sec_7, pd.DataFrame):
+            print('chill')
+        else:
+            print('its notification')
         frames.append(sec_7)
         sec_8=self.transferred_delights()
+        if isinstance(sec_8, pd.DataFrame):
+            print('chill')
+        else:
+            print('its delights')
         frames.append(sec_8)
         sec_9=self.news_feed()
         if isinstance(sec_9, pd.DataFrame):
