@@ -488,6 +488,7 @@ class make_activity:
 if __name__ == '__main__':
     a=make_activity(date(2022,8,17))
     b=a.scan_related()
+    print(b)
     print('Start writing')
     b.to_sql('customerActivity', con=engine, if_exists='replace',index_label='customerId')
     print('End writing')   
