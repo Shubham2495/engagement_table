@@ -419,10 +419,22 @@ class make_activity:
         sec_8=self.transferred_delights()
         frames.append(sec_8)
         sec_9=self.news_feed()
+        if isinstance(sec_9, pd.DataFrame):
+            print('chill')
+        else:
+            print('its newsfeed')
         frames.append(sec_9)
         sec_10=self.gems()
+        if isinstance(sec_10, pd.DataFrame):
+            print('chill')
+        else:
+            print('its gems')
         frames.append(sec_10)
         sec_11=self.referred()
+        if isinstance(sec_9, pd.DataFrame):
+            print('chill')
+        else:
+            print('its referred')
         frames.append(sec_11)
         
         plt=pd.concat(frames,axis=1).replace([np.inf, -np.inf], np.nan).reset_index()
