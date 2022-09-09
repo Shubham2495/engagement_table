@@ -378,7 +378,7 @@ class make_activity:
         return df
     
     def news_feed(self):
-        query='SELECT userId as customerId,count(id) as newsFeedInteraction from newsFeedActivity'
+        query='SELECT userId as customerId,count(id) as newsFeedInteraction from newsFeedActivity group by userId'
         df= pd.read_sql_query(query, con = engine)
         df=df.set_index('customerId')
         return df
