@@ -263,7 +263,7 @@ class make_activity:
        #scan_ret['Regularity']=(scan_ret['month_scanned']/scan_ret['Month_diff'])*100
        #scan_ret=scan_ret.drop(columns=['Month_diff','month_scanned'])
         print("Heavy stuff done")
-        return scan_ret,pff
+        return scan_ret
     
     def fcm_related(self):
         frames=[]
