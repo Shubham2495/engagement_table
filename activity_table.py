@@ -186,7 +186,6 @@ class make_activity:
         pss=pd.pivot_table(df,values='id',index=['customerId','Date'],aggfunc='count').reset_index()
         pss['diff_days']=(pss.sort_values('Date').groupby('customerId').Date.shift() - pss.Date).dt.days.abs().dropna()
         pff = pss.groupby('customerId')['diff_days'].median().round().reset_index().rename(columns={'diff_days':'shoppingInterval'}).set_index('customerId')
-        print(pff)
         #pff=pff.rename(columns={'diff_days':'shoppingInterval'})
         icr.append(pff)
         pret=all_sc.reset_index()
@@ -197,7 +196,7 @@ class make_activity:
         last_scan=df[['customerId','createdAt']].sort_values(['customerId','createdAt']).groupby('customerId').tail(1).set_index('customerId').rename(columns={'createdAt':'lastScan'})
         icr.append(last_scan)
         acc_scan=df[df['response'].isin([1,3,5])]
-        scan_amount=pd.pivot_table(acc_scan,values=['id','retailerId','retailerCategoryId','mallId'],index='customerId',aggfunc={'id':'nunique','retailerId':'nunique','retailerCategoryId':'nunique','mallId':'nunique'}).rename(columns={'id':'Accepted_scans','retailerId':'totalRetailers','retailerCategoryId':'totalCategories','mallId':'numberMalls'}).fillna(0)
+        scan_amount=pd.pivot_table(acc_scan,values=['id','retailerId','retailerCategoryId','mallId'],index='customerId',aggfunc={'retailerId':'nunique','retailerCategoryId':'nunique','mallId':'nunique'}).rename(columns={'retailerId':'totalRetailers','retailerCategoryId':'totalCategories','mallId':'numberMalls'}).fillna(0)
         icr.append(scan_amount)
         t_s=pd.pivot_table(acc_scan,values='scan_amount_proc',index='customerId',aggfunc=np.sum).rename(columns={'scan_amount_proc':'totalScanAmount'}).fillna(0)
         icr.append(t_s)
@@ -404,71 +403,38 @@ class make_activity:
         #df_main=df_main.set_index('customerId')
         #frames.append(df_main)
         sec_1=self.scan_related()
-        if isinstance(sec_1, pd.DataFrame):
-            print('chill')
-        else:
-            print('its scan')
+
         frames.append(sec_1)
         
         sec_2=self.fcm_related()
-        if isinstance(sec_2, pd.DataFrame):
-            print('chill')
-        else:
-            print('its fcm')
+
         frames.append(sec_2)
         sec_3=self.coupon_related()
-        if isinstance(sec_3, pd.DataFrame):
-            print('chill')
-        else:
-            print('its coupon')
+
         frames.append(sec_3)
         sec_4=self.reward_related()
-        if isinstance(sec_4, pd.DataFrame):
-            print('chill')
-        else:
-            print('its reward')
+
         frames.append(sec_4)
         sec_5=self.gamification_related()
-        if isinstance(sec_5, pd.DataFrame):
-            print('chill')
-        else:
-            print('its game')
+
         frames.append(sec_5)
         sec_6=self.scan_win()
-        if isinstance(sec_6, pd.DataFrame):
-            print('chill')
-        else:
-            print('its scan and win')
+
         frames.append(sec_6)
         sec_7=self.notification_clicked()
-        if isinstance(sec_7, pd.DataFrame):
-            print('chill')
-        else:
-            print('its notification')
+
         frames.append(sec_7)
         sec_8=self.transferred_delights()
-        if isinstance(sec_8, pd.DataFrame):
-            print('chill')
-        else:
-            print('its delights')
+
         frames.append(sec_8)
         sec_9=self.news_feed()
-        if isinstance(sec_9, pd.DataFrame):
-            print('chill')
-        else:
-            print('its newsfeed')
+
         frames.append(sec_9)
         sec_10=self.gems()
-        if isinstance(sec_10, pd.DataFrame):
-            print('chill')
-        else:
-            print('its gems')
+
         frames.append(sec_10)
         sec_11=self.referred()
-        if isinstance(sec_11, pd.DataFrame):
-            print('chill')
-        else:
-            print('its referred')
+
         frames.append(sec_11)
         
         plt=pd.concat(frames,axis=1).replace([np.inf, -np.inf], np.nan).reset_index()
@@ -487,8 +453,7 @@ class make_activity:
         
 if __name__ == '__main__':
     a=make_activity(date(2022,8,17))
-    b=a.scan_related()
-    print(b)
+    b=a.main()
     print('Start writing')
     b.to_sql('customerActivity', con=engine, if_exists='replace',index_label='customerId')
     print('End writing')   
