@@ -431,7 +431,7 @@ class make_activity:
             print('its gems')
         frames.append(sec_10)
         sec_11=self.referred()
-        if isinstance(sec_9, pd.DataFrame):
+        if isinstance(sec_11, pd.DataFrame):
             print('chill')
         else:
             print('its referred')
