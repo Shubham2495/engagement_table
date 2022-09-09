@@ -21,15 +21,28 @@ warnings.filterwarnings("ignore")
 
 import json
 
-with open("configuration.json") as json_data_file:
-    data = json.load(json_data_file)
 
-username=data['db']['readDb']['dbUserName']
-password=data['db']['readDb']['dbUserPassword']
-host=data['db']['readDb']['dbHost']
-database=data['db']['readDb']['dbName']
 
-engine = sqlalchemy.create_engine('mysql+pymysql://'+username+':'+password+'@'+host+'/'+database)
+with open(os.path.dirname(os.path.abspath(__file__)) + '/configuration.json') as f:
+    data = json.load(f)
+
+writeUser = data['db']['writeDb']['dbUserName']
+writePassword = data['db']['writeDb']['dbUserPassword']
+writeDatabase = data['db']['writeDb']['dbName']
+writeHost = data['db']['writeDb']['dbHost']
+
+readUser = data['db']['readDb']['dbUserName']
+readPassword = data['db']['readDb']['dbUserPassword']
+readDatabase = data['db']['readDb']['dbName']
+readHost = data['db']['readDb']['dbHost']
+
+
+
+engine = sqlalchemy.create_engine('mysql+pymysql://'+readUser+':'+readPassword+'@'+readHost+'/'+readDatabase)
+print('Read engine created')
+
+wr_engine=sqlalchemy.create_engine('mysql+pymysql://'+writeUser+':'+writePassword+'@'+writeHost+'/'+writeDatabase)
+print('write engine created')
 
 
 
@@ -296,7 +309,7 @@ class make_activity:
         df_cl=pd.merge(df_cus,df_c[['couponId','endDate']],how='left',on='couponId')
         df_exp=df_cl[(df_cl['endDate'])<=date.today()]
         df_ex_c=pd.pivot_table(df_exp,values='id',index='customerId',aggfunc='count').fillna(0)
-        df_ex_c=df_ex_c.rename(columns={'id':'Coupon Expired'})
+        df_ex_c=df_ex_c.rename(columns={'id':'couponExpired'})
         print('Load Successful! \n\n')
         frames.append(df_ex_c)
         
@@ -327,7 +340,7 @@ class make_activity:
         df_rl=pd.merge(df_rus,df_r[['rewardId','endDate']],how='left',on='rewardId')
         df_exp2=df_rl[(df_rl['endDate'])<=date.today()]
         df_ex_r=pd.pivot_table(df_exp2,values='id',index='customerId',aggfunc='count').fillna(0)
-        df_ex_r=df_ex_r.rename(columns={'id':'Reward Expired'})
+        df_ex_r=df_ex_r.rename(columns={'id':'rewardExpired'})
         print('Load Successful! \n\n')
         frames.append(df_ex_r)
         
@@ -357,7 +370,7 @@ class make_activity:
     
     def scan_win(self):
         
-        query = "SELECT customerId,count(*) AS S_W_participation,sum(isAwarded) AS S_W_completion FROM scanWinTransactions Group by customerId"
+        query = "SELECT customerId,count(*) AS scanwinParticipation,sum(isAwarded) AS scanwinCompletion FROM scanWinTransactions Group by customerId"
         df = pd.read_sql_query(query, con = engine)
         df=df.set_index('customerId')
         print('Load Successful! \n\n')
@@ -454,7 +467,8 @@ class make_activity:
 if __name__ == '__main__':
     a=make_activity(date(2022,8,17))
     b=a.main()
+    b=a.scan_related()
     print('Start writing')
-    b.to_sql('customerActivity', con=engine, if_exists='replace',index_label='customerId')
+    b.to_sql('customerActivity', con=wr_engine, if_exists='replace',index_label='customerId')
     print('End writing')   
         
